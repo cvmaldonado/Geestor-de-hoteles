@@ -1,0 +1,51 @@
+# =========================================
+# ARCHIVO .gitignore para NetBeans + Payara
+# =========================================
+
+# --- Carpetas y archivos generados por NetBeans ---
+nbproject/private/
+build/
+dist/
+nbbuild/
+nball/
+nbdist/
+*.bak
+
+# --- Compilación y empaquetado Maven ---
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# --- Logs y temporales ---
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+
+# --- Configuración local del servidor (Payara/GlassFish) ---
+config/
+domain1/
+payara5/
+glassfish5/
+domain/
+generated/
+
+# --- IDE-specific ---
+*.iml
+.idea/
+.vscode/
+*.class
+*.DS_Store
+
+# --- Sistema operativo ---
+Thumbs.db
+.DS_Store
+
+# --- Variables de entorno o credenciales ---
+.env
+*.properties.local
+*.secrets

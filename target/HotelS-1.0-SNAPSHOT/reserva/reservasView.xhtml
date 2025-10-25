@@ -1,0 +1,358 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Gestión de Reservas - Hotel System</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: #f5f5f5;
+            }
+            .header {
+                background: #2c3e50;
+                color: white;
+                padding: 1rem 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .content {
+                padding: 2rem;
+            }
+            .btn-primary {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 0.9rem;
+            }
+            .btn-success {
+                background: #27ae60;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-warning {
+                background: #f39c12;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-danger {
+                background: #e74c3c;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-secondary {
+                background: #95a5a6;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-info {
+                background: #17a2b8;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .table-container {
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                overflow: hidden;
+                margin-bottom: 1rem;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 1rem;
+                text-align: left;
+                border-bottom: 1px solid #ecf0f1;
+            }
+            th {
+                background: #34495e;
+                color: white;
+                font-weight: bold;
+            }
+            tr:hover {
+                background: #f8f9fa;
+            }
+            .actions {
+                display: flex;
+                gap: 0.3rem;
+                flex-wrap: wrap;
+            }
+            .form-container {
+                background: white;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 2rem;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: bold;
+                color: #2c3e50;
+            }
+            input, select, textarea {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #bdc3c7;
+                border-radius: 4px;
+                font-size: 1rem;
+                box-sizing: border-box;
+            }
+            .form-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+            .btn-back {
+                background: #7f8c8d;
+                color: white;
+                text-decoration: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                display: inline-block;
+                margin-right: 1rem;
+            }
+            .status-badge {
+                padding: 0.25rem 0.75rem;
+                border-radius: 12px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                text-transform: capitalize;
+            }
+            .status-pendiente { background: #f39c12; color: white; }
+            .status-confirmada { background: #27ae60; color: white; }
+            .status-cancelada { background: #e74c3c; color: white; }
+            .status-completada { background: #3498db; color: white; }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="header">
+            <h1>🏨 Hotel System - Gestión de Reservas</h1>
+            <div>
+                <span>Bienvenido, #{loginBean.usuarioLogueado.username} (#{loginBean.usuarioLogueado.rol})</span>
+                <h:form style="display: inline-block; margin-left: 1rem;">
+                    <h:commandButton value="Cerrar Sesión" action="#{loginBean.logout()}" 
+                                   styleClass="btn-danger"/>
+                </h:form>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="page-header">
+                <h2>Lista de Reservas</h2>
+                <div>
+                    <h:link value="← Volver al Dashboard" 
+                            outcome="/admin/dashboard"
+                            styleClass="btn-back"/>
+
+                    <h:form style="display: inline-block;">
+                        <h:commandButton value="➕ Nueva Reserva" 
+                                       action="#{reservaBean.prepararNuevaReserva()}"
+                                       styleClass="btn-success"
+                                       rendered="#{!reservaBean.modoEdicion}"/>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Formulario de Reserva -->
+            <h:form rendered="#{reservaBean.modoEdicion}">
+                <div class="form-container">
+                    <h3>#{reservaBean.reservaSeleccionada.idReserva == null ? 'Nueva Reserva' : 'Editar Reserva'}</h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <h:outputLabel for="huesped">Huésped:</h:outputLabel>
+                            <h:selectOneMenu id="huesped" value="#{reservaBean.reservaSeleccionada.huesped}" 
+                                           style="width: 100%;" required="true">
+                                <f:selectItem itemValue="#{null}" itemLabel="-- Seleccionar Huésped --"/>
+                                <ui:repeat value="#{reservaBean.huespedes}" var="huesped">
+                                    <f:selectItem itemValue="#{huesped}" 
+                                                 itemLabel="#{huesped.nombre} #{huesped.apellido} - #{huesped.email}"/>
+                                </ui:repeat>
+                            </h:selectOneMenu>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="habitacion">Habitación:</h:outputLabel>
+                            <h:selectOneMenu id="habitacion" value="#{reservaBean.reservaSeleccionada.habitacion}" 
+                                           style="width: 100%;" required="true">
+                                <f:selectItem itemValue="#{null}" itemLabel="-- Seleccionar Habitación --"/>
+                                <ui:repeat value="#{reservaBean.habitaciones}" var="habitacion">
+                                    <f:selectItem itemValue="#{habitacion}" 
+                                                 itemLabel="Habitación #{habitacion.numero} - #{habitacion.tipoHabitacion} - $#{habitacion.precioBase}"/>
+                                </ui:repeat>
+                            </h:selectOneMenu>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="fechaEntrada">Fecha de Entrada:</h:outputLabel>
+                            <h:inputText id="fechaEntrada" value="#{reservaBean.reservaSeleccionada.fechaEntrada}" 
+                                       required="true" style="width: 100%;">
+                                <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            </h:inputText>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="fechaSalida">Fecha de Salida:</h:outputLabel>
+                            <h:inputText id="fechaSalida" value="#{reservaBean.reservaSeleccionada.fechaSalida}" 
+                                       required="true" style="width: 100%;">
+                                <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            </h:inputText>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="numeroHuespedes">Número de Huéspedes:</h:outputLabel>
+                            <h:inputText id="numeroHuespedes" value="#{reservaBean.reservaSeleccionada.numeroHuespedes}" 
+                                       required="true" style="width: 100%;"/>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="estadoReserva">Estado:</h:outputLabel>
+                            <h:selectOneMenu id="estadoReserva" value="#{reservaBean.reservaSeleccionada.estadoReserva}" 
+                                           style="width: 100%;" required="true">
+                                <f:selectItem itemValue="pendiente" itemLabel="Pendiente"/>
+                                <f:selectItem itemValue="confirmada" itemLabel="Confirmada"/>
+                                <f:selectItem itemValue="cancelada" itemLabel="Cancelada"/>
+                                <f:selectItem itemValue="completada" itemLabel="Completada"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h:outputLabel for="observaciones">Observaciones:</h:outputLabel>
+                        <h:inputTextarea id="observaciones" value="#{reservaBean.reservaSeleccionada.observaciones}" 
+                                       rows="3" style="width: 100%;"/>
+                    </div>
+                    
+                    <div class="actions">
+                        <h:commandButton value="💾 Guardar" 
+                                       action="#{reservaBean.guardarReserva()}"
+                                       styleClass="btn-success"/>
+                        <h:commandButton value="❌ Cancelar" 
+                                       action="#{reservaBean.cancelarEdicion()}"
+                                       styleClass="btn-secondary"
+                                       immediate="true"/>
+                    </div>
+                </div>
+            </h:form>
+
+            <!-- Tabla de Reservas -->
+            <h:form rendered="#{!reservaBean.modoEdicion}">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Huésped</th>
+                                <th>Habitación</th>
+                                <th>Fecha Entrada</th>
+                                <th>Fecha Salida</th>
+                                <th>N° Huéspedes</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{reservaBean.reservas}" var="reserva">
+                                <tr>
+                                    <td>#{reserva.idReserva}</td>
+                                    <td>#{reserva.huesped.nombre} #{reserva.huesped.apellido}</td>
+                                    <td>Habitación #{reserva.habitacion.numero}</td>
+                                    <td>#{reserva.fechaEntrada}</td>
+                                    <td>#{reserva.fechaSalida}</td>
+                                    <td>#{reserva.numeroHuespedes}</td>
+                                    <td>
+                                        <span class="status-badge status-#{reserva.estadoReserva}">
+                                            #{reserva.estadoReserva}
+                                        </span>
+                                    </td>
+                                    <td class="actions">
+                                        <h:commandButton value="Editar" 
+                                                       action="#{reservaBean.editarReserva(reserva)}"
+                                                       styleClass="btn-warning"/>
+                                        <h:commandButton value="Eliminar" 
+                                                       action="#{reservaBean.eliminarReserva(reserva)}"
+                                                       styleClass="btn-danger"
+                                                       onclick="return confirm('¿Está seguro de eliminar la reserva #{reserva.idReserva}?')"/>
+                                        
+                                        <!-- Botones para cambiar estado rápidamente -->
+                                        <h:commandButton value="✓ Confirmar" 
+                                                       action="#{reservaBean.confirmarReserva(reserva)}"
+                                                       styleClass="btn-success"
+                                                       rendered="#{reserva.estadoReserva != 'confirmada' and reserva.estadoReserva != 'cancelada'}"/>
+                                        <h:commandButton value="✗ Cancelar" 
+                                                       action="#{reservaBean.cancelarReserva(reserva)}"
+                                                       styleClass="btn-danger"
+                                                       rendered="#{reserva.estadoReserva != 'cancelada'}"/>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                            
+                            <!-- Mensaje cuando no hay reservas -->
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 2rem;"
+                                    rendered="#{empty reservaBean.reservas}">
+                                    No hay reservas registradas
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Botón de recargar -->
+                <div style="margin-top: 1rem;">
+                    <h:commandButton value="Recargar Lista" 
+                                   action="#{reservaBean.cargarReservas()}"
+                                   styleClass="btn-primary"/>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</html>

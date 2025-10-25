@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Dashboard - Hotel System</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: #f5f5f5;
+            }
+            .header {
+                background: #2c3e50;
+                color: white;
+                padding: 1rem 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .content {
+                padding: 2rem;
+            }
+            .btn-logout {
+                background: #e74c3c;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            .stats {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+            .stat-card {
+                background: white;
+                padding: 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                flex: 1;
+                text-align: center;
+            }
+            .stat-number {
+                font-size: 2rem;
+                font-weight: bold;
+                margin: 0.5rem 0;
+            }
+            .stat-label {
+                color: #7f8c8d;
+                font-size: 0.9rem;
+            }
+            .btn-refresh {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-bottom: 1rem;
+            }
+        </style>
+    </h:head>
+    <h:body onload="#{dashboardBean.cargarDatos()}">
+        <div class="header">
+            <h1>🏨 Hotel System - Dashboard</h1>
+            <div>
+                <span>Bienvenido, #{loginBean.usuarioLogueado.username} (#{loginBean.usuarioLogueado.rol})</span>
+                <h:form style="display: inline-block; margin-left: 1rem;">
+                    <h:commandButton value="Cerrar Sesión" action="#{loginBean.logout()}" 
+                                   styleClass="btn-logout"/>
+                </h:form>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Botón para actualizar datos -->
+            <h:form>
+                <h:commandButton value="🔄 Actualizar Datos" action="#{dashboardBean.cargarDatos()}" 
+                               styleClass="btn-refresh"/>
+            </h:form>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Habitaciones</h3>
+                    <div class="stat-number">#{dashboardBean.totalHabitaciones}</div>
+                    <div class="stat-label">Total</div>
+                    <div class="stat-number" style="color: #27ae60;">#{dashboardBean.habitacionesDisponibles}</div>
+                    <div class="stat-label">Disponibles</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Reservas</h3>
+                    <div class="stat-number">#{dashboardBean.reservasActivas}</div>
+                    <div class="stat-label">Activas</div>
+                    <div class="stat-number" style="color: #e67e22;">#{dashboardBean.reservasHoy}</div>
+                    <div class="stat-label">Para hoy</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Huéspedes</h3>
+                    <div class="stat-number" style="color: #9b59b6;">#{dashboardBean.huespedesActivos}</div>
+                    <div class="stat-label">Activos</div>
+                </div>
+            </div>
+            
+            <h2>Acciones Rápidas</h2>
+            <div>
+                <h:button value="Gestión de Habitaciones" 
+                          outcome="/habitacion/habitacionesView"
+                          style="margin-right: 1rem; padding: 0.75rem 1.5rem;"/>
+                
+                <h:button value="Gestión de Reservas" 
+                          outcome="/reserva/reservasView"
+                          style="margin-right: 1rem; padding: 0.75rem 1.5rem;"/>
+
+                <h:commandButton value="Gestión de Huéspedes" 
+                               action="/admin/huespedes/list?faces-redirect=true"
+                               style="padding: 0.75rem 1.5rem;"/>
+            </div>
+        </div>
+    </h:body>
+</html>

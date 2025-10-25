@@ -1,0 +1,347 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Gestión de Habitaciones - Hotel System</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: #f5f5f5;
+            }
+            .header {
+                background: #2c3e50;
+                color: white;
+                padding: 1rem 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .content {
+                padding: 2rem;
+            }
+            .btn-primary {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 0.9rem;
+            }
+            .btn-success {
+                background: #27ae60;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-warning {
+                background: #f39c12;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-danger {
+                background: #e74c3c;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-secondary {
+                background: #95a5a6;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-info {
+                background: #17a2b8;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .table-container {
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                overflow: hidden;
+                margin-bottom: 1rem;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 1rem;
+                text-align: left;
+                border-bottom: 1px solid #ecf0f1;
+            }
+            th {
+                background: #34495e;
+                color: white;
+                font-weight: bold;
+            }
+            tr:hover {
+                background: #f8f9fa;
+            }
+            .actions {
+                display: flex;
+                gap: 0.3rem;
+                flex-wrap: wrap;
+            }
+            .form-container {
+                background: white;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 2rem;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: bold;
+                color: #2c3e50;
+            }
+            input, select, textarea {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #bdc3c7;
+                border-radius: 4px;
+                font-size: 1rem;
+                box-sizing: border-box;
+            }
+            .form-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+            .btn-back {
+                background: #7f8c8d;
+                color: white;
+                text-decoration: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                display: inline-block;
+                margin-right: 1rem;
+            }
+            .status-badge {
+                padding: 0.25rem 0.75rem;
+                border-radius: 12px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                text-transform: capitalize;
+            }
+            .status-disponible { background: #27ae60; color: white; }
+            .status-ocupada { background: #e74c3c; color: white; }
+            .status-mantenimiento { background: #f39c12; color: white; }
+            .status-limpieza { background: #3498db; color: white; }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="header">
+            <h1>🏨 Hotel System - Gestión de Habitaciones</h1>
+            <div>
+                <span>Bienvenido, #{loginBean.usuarioLogueado.username} (#{loginBean.usuarioLogueado.rol})</span>
+                <h:form style="display: inline-block; margin-left: 1rem;">
+                    <h:commandButton value="Cerrar Sesión" action="#{loginBean.logout()}" 
+                                   styleClass="btn-danger"/>
+                </h:form>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="page-header">
+                <h2>Lista de Habitaciones</h2>
+                <div>
+                    <h:link value="← Volver al Dashboard" 
+                            outcome="/admin/dashboard"
+                            styleClass="btn-back"/>
+
+                    <h:form style="display: inline-block;">
+                        <h:commandButton value="➕ Nueva Habitación" 
+                                       action="#{habitacionBean.prepararNuevaHabitacion()}"
+                                       styleClass="btn-success"
+                                       rendered="#{!habitacionBean.modoEdicion}"/>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Formulario de Habitación -->
+            <h:form rendered="#{habitacionBean.modoEdicion}">
+                <div class="form-container">
+                    <h3>#{habitacionBean.habitacionSeleccionada.idHabitacion == null ? 'Nueva Habitación' : 'Editar Habitación'}</h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <h:outputLabel for="numero">Número de Habitación:</h:outputLabel>
+                            <h:inputText id="numero" value="#{habitacionBean.habitacionSeleccionada.numero}" 
+                                       required="true" style="width: 100%;"/>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="piso">Piso:</h:outputLabel>
+                            <h:inputText id="piso" value="#{habitacionBean.habitacionSeleccionada.piso}" 
+                                       style="width: 100%;"/>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="tipoHabitacion">Tipo de Habitación:</h:outputLabel>
+                            <h:selectOneMenu id="tipoHabitacion" value="#{habitacionBean.habitacionSeleccionada.tipoHabitacion}" 
+                                           style="width: 100%;">
+                                <f:selectItem itemValue="individual" itemLabel="Individual"/>
+                                <f:selectItem itemValue="doble" itemLabel="Doble"/>
+                                <f:selectItem itemValue="suite" itemLabel="Suite"/>
+                                <f:selectItem itemValue="familiar" itemLabel="Familiar"/>
+                            </h:selectOneMenu>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="capacidad">Capacidad:</h:outputLabel>
+                            <h:inputText id="capacidad" value="#{habitacionBean.habitacionSeleccionada.capacidad}" 
+                                       style="width: 100%;"/>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="precioBase">Precio Base:</h:outputLabel>
+                            <h:inputText id="precioBase" value="#{habitacionBean.habitacionSeleccionada.precioBase}" 
+                                       style="width: 100%;"/>
+                        </div>
+                        
+                        <div class="form-group">
+                            <h:outputLabel for="estado">Estado:</h:outputLabel>
+                            <h:selectOneMenu id="estado" value="#{habitacionBean.habitacionSeleccionada.estado}" 
+                                           style="width: 100%;">
+                                <f:selectItem itemValue="disponible" itemLabel="Disponible"/>
+                                <f:selectItem itemValue="ocupada" itemLabel="Ocupada"/>
+                                <f:selectItem itemValue="mantenimiento" itemLabel="En Mantenimiento"/>
+                                <f:selectItem itemValue="limpieza" itemLabel="En Limpieza"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h:outputLabel for="descripcion">Descripción:</h:outputLabel>
+                        <h:inputTextarea id="descripcion" value="#{habitacionBean.habitacionSeleccionada.descripcion}" 
+                                       rows="3" style="width: 100%;"/>
+                    </div>
+                    
+                    <div class="actions">
+                        <h:commandButton value="💾 Guardar" 
+                                       action="#{habitacionBean.guardarHabitacion()}"
+                                       styleClass="btn-success"/>
+                        <h:commandButton value="❌ Cancelar" 
+                                       action="#{habitacionBean.cancelarEdicion()}"
+                                       styleClass="btn-secondary"
+                                       immediate="true"/>
+                    </div>
+                </div>
+            </h:form>
+
+            <!-- Tabla de Habitaciones -->
+            <h:form rendered="#{!habitacionBean.modoEdicion}">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Número</th>
+                                <th>Piso</th>
+                                <th>Tipo</th>
+                                <th>Capacidad</th>
+                                <th>Precio Base</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{habitacionBean.habitaciones}" var="habitacion">
+                                <tr>
+                                    <td>#{habitacion.idHabitacion}</td>
+                                    <td>#{habitacion.numero}</td>
+                                    <td>#{habitacion.piso}</td>
+                                    <td>#{habitacion.tipoHabitacion}</td>
+                                    <td>#{habitacion.capacidad}</td>
+                                    <td>$#{habitacion.precioBase}</td>
+                                    <td>
+                                        <span class="status-badge status-#{habitacion.estado}">
+                                            #{habitacion.estado}
+                                        </span>
+                                    </td>
+                                    <td class="actions">
+                                        <h:commandButton value="Editar" 
+                                                       action="#{habitacionBean.editarHabitacion(habitacion)}"
+                                                       styleClass="btn-warning"/>
+                                        <h:commandButton value="Eliminar" 
+                                                       action="#{habitacionBean.eliminarHabitacion(habitacion)}"
+                                                       styleClass="btn-danger"
+                                                       onclick="return confirm('¿Está seguro de eliminar la habitación #{habitacion.numero}?')"/>
+                                        
+                                        <!-- Botones para cambiar estado rápidamente -->
+                                        <h:commandButton value="🔄 Disp" 
+                                                       action="#{habitacionBean.cambiarEstadoHabitacion(habitacion, 'disponible')}"
+                                                       styleClass="btn-info"
+                                                       rendered="#{habitacion.estado != 'disponible'}"/>
+                                        <h:commandButton value="Mant" 
+                                                       action="#{habitacionBean.cambiarEstadoHabitacion(habitacion, 'mantenimiento')}"
+                                                       styleClass="btn-primary"
+                                                       rendered="#{habitacion.estado != 'mantenimiento'}"/>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                            
+                            <!-- Mensaje cuando no hay habitaciones -->
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 2rem;"
+                                    rendered="#{empty habitacionBean.habitaciones}">
+                                    No hay habitaciones registradas
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Botón de recargar -->
+                <div style="margin-top: 1rem;">
+                    <h:commandButton value="Recargar Lista" 
+                                   action="#{habitacionBean.cargarHabitaciones()}"
+                                   styleClass="btn-primary"/>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</html>
